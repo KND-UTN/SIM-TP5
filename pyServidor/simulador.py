@@ -73,7 +73,7 @@ class Simulacion:
         urgente = self.eventos.calcular_urgente()
         if urgente:
             paciente_examinado.caso.urgencia(paciente_examinado)
-            fue_atendido = self.medicos.nuevo_urgencia(paciente_examinado)
+            fue_atendido = self.medicos.nuevo_urgencia(paciente_examinado, self.reloj, self.eventos.fin_atencion_m1)
         else:
             paciente_examinado.caso.caso_comun(paciente_examinado)
             fue_atendido = self.medicos.nuevo_comun(paciente_examinado)
@@ -89,21 +89,29 @@ class Simulacion:
         self.eventos.arrastrar_llegada_paciente()
         self.eventos.arrastrar_fin_examen()
         self.eventos.limpiar_urgente()
-        self.medicos.siguiente_m1()
-        if self.medicos.medico1_esta_ocupado():
-            self.eventos.calcular_fin_atencion_m1(self.reloj)
+        atendido_suspendido = self.medicos.siguiente_m1()
+        if not atendido_suspendido:
+            if self.medicos.medico1_esta_ocupado():
+                self.eventos.calcular_fin_atencion_m1(self.reloj)
+            else:
+                self.eventos.limpiar_fin_atencion_m1()
         else:
-            self.eventos.limpiar_fin_atencion_m1()
+            self.eventos.calcular_fin_atencion_m1_con_remanencia(self.reloj, self.medicos.tiempo_remanente_m1)
+            self.medicos.tiempo_remanente_m1 = None
 
     def fin_atencion_m2(self):
         self.eventos.arrastrar_llegada_paciente()
         self.eventos.arrastrar_fin_examen()
         self.eventos.limpiar_urgente()
-        self.medicos.siguiente_m2()
-        if self.medicos.medico2_esta_ocupado():
-            self.eventos.calcular_fin_atencion_m2(self.reloj)
+        atendido_suspendido = self.medicos.siguiente_m2()
+        if not atendido_suspendido:
+            if self.medicos.medico2_esta_ocupado():
+                self.eventos.calcular_fin_atencion_m2(self.reloj)
+            else:
+                self.eventos.limpiar_fin_atencion_m2()
         else:
-            self.eventos.limpiar_fin_atencion_m2()
+            self.eventos.calcular_fin_atencion_m2_con_remanencia(self.reloj, self.medicos.tiempo_remanente_m2)
+            self.medicos.tiempo_remanente_m2 = None
 
     def get_table(self):
         return self.tabla

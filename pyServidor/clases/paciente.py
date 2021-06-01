@@ -50,6 +50,9 @@ class EsperaComun(PacienteState):
 
 
 class SiendoAtendidoComun(PacienteState):
+    def suspender(self, paciente):
+        paciente.estado = Suspendido()
+
     def toString(self):
         return 'SAC'
 
@@ -65,6 +68,9 @@ class EsperaUrgencia(PacienteState):
 
 
 class Suspendido(PacienteState):
+    def atender(self, paciente):
+        paciente.estado = SiendoAtendidoComun()
+
     def toString(self):
         return 'Suspendido'
 

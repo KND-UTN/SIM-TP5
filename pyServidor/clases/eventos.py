@@ -39,6 +39,12 @@ class Eventos:
         self.tiempo_atencion = 6 + self.rnd_tiempo_atencion * (8)
         self.fin_atencion_m1 = reloj + self.tiempo_atencion
 
+    def calcular_fin_atencion_m1_con_remanencia(self, reloj, remanencia):
+        self.fin_atencion_m1 = reloj + remanencia
+
+    def calcular_fin_atencion_m2_con_remanencia(self, reloj, remanencia):
+        self.fin_atencion_m2 = reloj + remanencia
+
     def calcular_fin_atencion_m2(self, reloj):
         self.rnd_tiempo_atencion = Random().randomAtencion()
         self.tiempo_atencion = 6 + self.rnd_tiempo_atencion * (8)
