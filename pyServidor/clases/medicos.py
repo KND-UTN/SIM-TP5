@@ -36,7 +36,7 @@ class Medicos:
         self.cola_comun.append(paciente)
         return 0  # No fue atendido (en cola)
 
-    def nuevo_urgencia(self, paciente, reloj, fin_atencion):
+    def nuevo_urgencia(self, paciente, reloj, fin_atencion_m1, fin_atencion_m2):
         if isinstance(self.estado_m1, Libre):
             self.estado_m1 = AtendiendoUrgente()
             self.atendiendo_m1 = paciente
@@ -55,7 +55,7 @@ class Medicos:
             self.suspendido_m1.estado.suspender(self.suspendido_m1)
             self.atendiendo_m1 = paciente
             self.atendiendo_m1.estado.atendido_urgencia(self.atendiendo_m1)
-            self.tiempo_remanente_m1 = fin_atencion - reloj
+            self.tiempo_remanente_m1 = fin_atencion_m1 - reloj
             Estadisticas.espera_urgente = reloj - paciente.hora_inicio_espera
             Estadisticas.ac_interrupciones += 1
             return 1  # Fue atendido por el medico 1
@@ -65,7 +65,7 @@ class Medicos:
             self.suspendido_m2.estado.suspender(self.suspendido_m2)
             self.atendiendo_m2 = paciente
             self.atendiendo_m2.estado.atendido_urgencia(self.atendiendo_m2)
-            self.tiempo_remanente_m2 = fin_atencion - reloj
+            self.tiempo_remanente_m2 = fin_atencion_m2 - reloj
             Estadisticas.espera_urgente = reloj - paciente.hora_inicio_espera
             Estadisticas.ac_interrupciones += 1
             return 2  # Fue atendido por el medico 2

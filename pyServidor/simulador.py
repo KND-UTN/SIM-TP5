@@ -82,6 +82,9 @@ class Simulacion:
             Estadisticas.espera_urgente = 0
             # Fin del reinicio
 
+        self.fila = [self.nombre_evento, self.reloj] + self.eventos.get_fila() + \
+                    self.enfermero.get_fila() + self.medicos.get_fila(Simulacion) + self.estadisticas.get_fila()
+        self.tabla = self.tabla.append(pd.DataFrame([self.fila], columns=columnas))
         Estadisticas.reiniciar_estadisticas()
         Paciente.countId = 0
         self.tabla.to_excel("output.xlsx", sheet_name="h1")
@@ -128,7 +131,7 @@ class Simulacion:
         urgente = self.eventos.calcular_urgente()
         if urgente:
             paciente_examinado.caso.urgencia(paciente_examinado)
-            fue_atendido = self.medicos.nuevo_urgencia(paciente_examinado, self.reloj, self.eventos.fin_atencion_m1)
+            fue_atendido = self.medicos.nuevo_urgencia(paciente_examinado, self.reloj, self.eventos.fin_atencion_m1, self.eventos.fin_atencion_m2)
         else:
             paciente_examinado.caso.caso_comun(paciente_examinado)
             fue_atendido = self.medicos.nuevo_comun(paciente_examinado, self.reloj)
@@ -183,8 +186,8 @@ class Simulacion:
 
 if __name__ == '__main__':
     # Hacemos que se tomen los randoms preestablecidos
-    Random.debug = True
-    simulacion = Simulacion(10, 0, 10)
+    Random.debug = False
+    simulacion = Simulacion(100, 0, 10)
     print(simulacion.get_table())
     print(simulacion.get_pacientes_json())
 
