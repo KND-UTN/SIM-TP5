@@ -32,6 +32,8 @@ class Enfermero:
 
 
     def get_fila(self):
+        if self.esta_ocupado():
+            return [self.estado.toString() + " (P" + str(self.paciente_actual.id) + ")", len(self.cola)]
         return [self.estado.toString(), len(self.cola)]
 
 

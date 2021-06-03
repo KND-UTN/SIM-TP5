@@ -2,13 +2,29 @@ from abc import ABC, abstractmethod
 
 
 class Paciente:
+    countId = 0
+
     def __init__(self, reloj):
+        self.id = Paciente.countId
         self.estado = EsperaExamen()
         self.caso = SinExamenCompletado()
         self.hora_inicio_espera = reloj
+        self.hora_salida_sistema = None
 
     def get_fila(self):
-        return [self.estado.toString(), self.caso.toString(), self.hora_inicio_espera]
+        json_retornar = {
+            "paciente": self.id,
+            "estado": self.estado.toString(),
+            "caso": self.caso.toString(),
+            "hes": self.hora_inicio_espera,
+            "hss": self.hora_salida_sistema
+        }
+        return json_retornar
+
+    def atencion_completa(self, reloj):
+        self.estado = AtencionCompleta()
+        self.hora_salida_sistema = reloj
+
 
 
 # ----- ESTADOS DEL PACIENTE -----
@@ -17,6 +33,10 @@ class PacienteState(ABC):
     @abstractmethod
     def toString(self):
         pass
+
+class AtencionCompleta(PacienteState):
+    def toString(self):
+        return 'Terminado'
 
 
 class EsperaExamen(PacienteState):
@@ -63,6 +83,9 @@ class SiendoAtendidoUrgencia(PacienteState):
 
 
 class EsperaUrgencia(PacienteState):
+    def atendido_urgencia(self, paciente):
+        paciente.estado = SiendoAtendidoUrgencia()
+
     def toString(self):
         return 'EU'
 
