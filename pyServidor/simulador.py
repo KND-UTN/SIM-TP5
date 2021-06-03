@@ -51,7 +51,8 @@ class Simulacion:
             self.estadisticas.max_espera_urgente = max(self.estadisticas.max_espera_urgente,
                                                        self.estadisticas.espera_urgente)
             if not self.medicos.medico1_esta_ocupado():
-                Estadisticas.tiempo_ocioso_medico_1 += self.reloj - self.reloj_anterior
+                if anterior_m1_libre:
+                    Estadisticas.tiempo_ocioso_medico_1 += self.reloj - self.reloj_anterior
                 anterior_m1_libre = True
             else:
                 if anterior_m1_libre:
@@ -59,7 +60,8 @@ class Simulacion:
                 anterior_m1_libre = False
 
             if not self.medicos.medico2_esta_ocupado():
-                Estadisticas.tiempo_ocioso_medico_2 += self.reloj - self.reloj_anterior
+                if anterior_m2_libre:
+                    Estadisticas.tiempo_ocioso_medico_2 += self.reloj - self.reloj_anterior
                 anterior_m2_libre = True
             else:
                 if anterior_m2_libre:
@@ -187,7 +189,7 @@ class Simulacion:
 if __name__ == '__main__':
     # Hacemos que se tomen los randoms preestablecidos
     Random.debug = False
-    simulacion = Simulacion(100, 0, 10)
+    simulacion = Simulacion(1000, 0, 1000)
     print(simulacion.get_table())
     print(simulacion.get_pacientes_json())
 
